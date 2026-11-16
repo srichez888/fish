@@ -41,7 +41,7 @@ export function dropFood(): void {
   }
   if (food.length > FOOD_MAX) food.splice(0, food.length - FOOD_MAX);
   burst(player.x, player.y, '#ffb26b', 6, 70);
-  Sound.blip(300, 0.15, 0.1, 'triangle');
+  Sound.foodPlop(player.x);
 }
 
 export function nearestFood(f: Fish, radius: number): Food | null {
@@ -121,7 +121,7 @@ export function updateJellies(dt: number): void {
         burst(j.x, j.y, '#ff7aa2', 10, 80);
         popup(player.x, player.y - player.radius, '-2 kg', '#ff5d6c');
         addShake(5);
-        Sound.sting();
+        Sound.sting(j.x);
       }
     }
   }
@@ -143,7 +143,7 @@ export function updatePickups(dt: number): void {
         applyPickup(u.kind);
         burst(u.x, u.y, PICKUP_INFO[u.kind].color, 12, 120);
         popup(u.x, u.y - 14, PICKUP_INFO[u.kind].label, PICKUP_INFO[u.kind].color);
-        Sound.pickup();
+        Sound.pickup(u.kind, u.x);
         pickups.splice(i, 1);
       }
     }
@@ -179,14 +179,12 @@ export function updateFrenzy(dt: number): void {
         });
       }
       frenzy.beat = 0;
-      Sound.blip(500, 0.25, 0.12, 'triangle');
-      setTimeout(() => Sound.blip(630, 0.25, 0.12, 'triangle'), 110);
-      setTimeout(() => Sound.blip(760, 0.35, 0.12, 'triangle'), 220);
+      Sound.frenzyChime();
     }
   } else {
     frenzy.t -= dt;
     frenzy.beat -= dt;
-    if (frenzy.beat <= 0){ frenzy.beat = 2.6; Sound.blip(rand(480, 620), 0.3, 0.05, 'triangle'); }
+    if (frenzy.beat <= 0){ frenzy.beat = 2.6; Sound.frenzyBeat(); }
     if (frenzy.t <= 0){ frenzy.active = false; frenzy.next = rand(50, 70); }
   }
 }
@@ -208,7 +206,7 @@ export function pufferDamage(): void {
       burst(f.x, f.y, '#ffd166', 10, 110);
       popup(player.x, player.y - player.radius, '-2 kg', '#ff5d6c');
       addShake(5);
-      Sound.sting();
+      Sound.sting(f.x);
     }
   }
 }
@@ -234,7 +232,7 @@ export function updatePellets(dt: number): void {
         p.mass += 0.5;
         trackMass(p.mass);
         burst(pel.x, pel.y, pel.hue < 0.5 ? '#3ef2d0' : '#ffd166', 4, 60);
-        Sound.pellet();
+        Sound.pellet(pel.x);
         pellets.splice(i, 1);
         queuePellet();
       }

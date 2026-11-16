@@ -86,7 +86,7 @@ function buildPadTools(): void {
       padColor = c; padEraser = false;
       tools.querySelectorAll('.sw').forEach(x => x.classList.remove('sel'));
       b.classList.add('sel');
-      Sound.pellet();
+      Sound.click();
     });
     tools.appendChild(b);
   });
@@ -97,7 +97,7 @@ function buildPadTools(): void {
     padEraser = true;
     tools.querySelectorAll('.sw').forEach(x => x.classList.remove('sel'));
     er.classList.add('sel');
-    Sound.pellet();
+    Sound.click();
   });
   tools.appendChild(er);
   [6, 12, 22].forEach(s => {
@@ -111,7 +111,7 @@ function buildPadTools(): void {
       padSize = s;
       tools.querySelectorAll('.bs').forEach(x => x.classList.remove('sel'));
       b.classList.add('sel');
-      Sound.pellet();
+      Sound.click();
     });
     tools.appendChild(b);
   });
@@ -122,7 +122,7 @@ export function openDraw(): void {
   drawGuide();
   buildPadTools();
   el('drawScreen').classList.remove('hidden');
-  Sound.pellet();
+  Sound.click();
 }
 
 function closeDraw(): void {
@@ -135,7 +135,7 @@ guideBtn.addEventListener('click', () => {
   padGuideOn = !padGuideOn;
   guideBtn.textContent = 'GUIDE : ' + (padGuideOn ? 'ON' : 'OFF');
   drawGuide();
-  Sound.pellet();
+  Sound.click();
 });
 el('padCancel').addEventListener('click', () => { closeDraw(); Sound.pellet(); });
 el('padSave').addEventListener('click', () => {
@@ -149,5 +149,5 @@ el('padSave').addEventListener('click', () => {
   CustomSkin.save(small.toDataURL('image/png'));
   selectCustom();
   closeDraw();
-  Sound.pickup();
+  Sound.pickup('shield');
 });

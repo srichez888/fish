@@ -4,15 +4,19 @@ import {
   addPlayTime, cam, decayFoodCd, decayShake, fish, pellets, player,
   queueSpawn, shake, state, takePelletQueue, takeSpawnQueue, tick, time,
 } from './state';
+import { Sound } from './audio';
 import { updatePlayer } from './player';
 import {
-  canBeEaten, pruneSchools, pufferDamage, updateFood, updateFrenzy,
-  updateJellies, updatePickups, updatePellets, updatePowerTimers, updateSchools,
+  canBeEaten, playerHidden, pruneSchools, pufferDamage, updateFood,
+  updateFrenzy, updateJellies, updatePickups, updatePellets,
+  updatePowerTimers, updateSchools,
 } from './world';
 import { tryEat, updateAI } from './ai';
 import { burst, updateBubbles, updateParticles } from './effects';
 import { spawnAI, spawnPellet } from './spawn';
 import { DPR, ctx, H, W } from './canvas';
+
+let lastHidden = false;
 import {
   drawBackground, drawBorder, drawParticles, drawPlankton,
   drawRays, drawWorldObjects,
@@ -80,6 +84,21 @@ export function loop(now: number): void {
     cam.x += (player.x - cam.x) * clamp(dt * 5, 0, 1);
     cam.y += (player.y - cam.y) * clamp(dt * 5, 0, 1);
 
+    // audio: ambience follows depth, music darkens with danger, kelp rustles
+    Sound.setDepth(cam.y / WORLD);
+    let nD = Infinity;
+    for (const f of fish){
+      if (!f.alive || f.mass <= player.mass * EAT_RATIO) continue;
+      const dv = dist2(f.x, f.y, player.x, player.y);
+      if (dv < nD) nD = dv;
+    }
+    Sound.setDanger(nD === Infinity ? 0 : clamp(1 - Math.sqrt(nD) / 900, 0, 1));
+    const hidden = playerHidden();
+    if (hidden !== lastHidden){
+      Sound.kelp(hidden);
+      lastHidden = hidden;
+    }
+
     updateHUD();
   } else {
     // the world keeps living behind the screens
@@ -96,6 +115,8 @@ export function loop(now: number): void {
       cam.x += (WORLD / 2 + Math.sin(time) * 900 - cam.x) * clamp(dt, 0, 1) * 0.4;
       cam.y += (WORLD / 2 + Math.cos(time * 0.13) * 700 - cam.y) * clamp(dt, 0, 1) * 0.4;
       cam.z += (0.55 - cam.z) * clamp(dt, 0, 1);
+      Sound.setDepth(cam.y / WORLD);
+      Sound.setDanger(0);
     }
   }
 

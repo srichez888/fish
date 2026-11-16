@@ -19,6 +19,7 @@ export function onDeath(killer: Fish): void {
   burst(player.x, player.y, '#ff8a5c', 20, 160);
   addShake(14);
   Sound.death();
+  Sound.duck(true);   // music and ambience step back on the death screen
   const beatMass = player.mass > Records.data.bestMass;
   Records.data.bestMass = Math.max(Records.data.bestMass, player.mass);
   Records.data.bestTime = Math.max(Records.data.bestTime, playTime);
@@ -67,4 +68,5 @@ export function startGame(): void {
   el('hud').classList.add('on');
   el('muteBtn').classList.add('on');
   Sound.init();
+  Sound.duck(false);
 }

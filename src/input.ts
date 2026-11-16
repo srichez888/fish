@@ -1,8 +1,10 @@
 import { mouse } from './state';
-import { Sound } from './audio';
+import { Sound, type AudioMode } from './audio';
 import { dropFood } from './world';
 import { startGame } from './game';
 import { el } from './dom';
+
+const MUTE_ICONS: Record<AudioMode, string> = { all: '♪', nomusic: '♩', off: '✕' };
 
 export function initInput(): void {
   window.addEventListener('pointermove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
@@ -19,11 +21,16 @@ export function initInput(): void {
   window.addEventListener('keyup', e => { if (e.code === 'Space' || e.code === 'ShiftLeft') mouse.down = false; });
 
   const muteBtn = el('muteBtn');
+  const applyMuteIcon = (): void => {
+    muteBtn.textContent = MUTE_ICONS[Sound.mode];
+    muteBtn.style.color = Sound.mode === 'off' ? 'var(--danger)' : 'var(--glow)';
+    muteBtn.title = Sound.mode === 'all' ? 'Sound: all on' : Sound.mode === 'nomusic' ? 'Sound: music off' : 'Sound: muted';
+  };
   muteBtn.addEventListener('click', () => {
-    Sound.on = !Sound.on;
-    muteBtn.textContent = Sound.on ? '♪' : '✕';
-    muteBtn.style.color = Sound.on ? 'var(--glow)' : 'var(--danger)';
+    Sound.cycle();
+    applyMuteIcon();
   });
+  applyMuteIcon();
 
   el('playBtn').addEventListener('click', () => startGame());
   el('retryBtn').addEventListener('click', () => startGame());

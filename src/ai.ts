@@ -138,7 +138,7 @@ export function tryEat(eater: Fish, prey: Fish): void {
     if (eater.isPlayer){
       addEaten();
       popup(prey.x, prey.y - prey.radius, '+' + Math.round(gain) + ' kg', '#ffd166');
-      Sound.eat(prey.mass / eater.mass);
+      Sound.eat(prey.mass / eater.mass, prey.x);
       if (prey.mass > eater.mass * 0.45) addShake(6);
       trackMass(player.mass);
     } else if (prey.isPlayer){

@@ -1,5 +1,6 @@
 import { CUSTOM_PAL, DIFF, SKINS, WORLD } from './config';
 import { clamp } from './utils';
+import { Sound } from './audio';
 import { CustomSkin } from './customSkin';
 import { buildSkinRow, initMenu, updateRecordsLine } from './menu';
 import { initInput } from './input';
@@ -9,6 +10,7 @@ import { difficulty, player, Records, setDifficulty, setSkinIdx, setSkinMode, sk
 
 /* ---------- boot ---------- */
 Records.load();
+Sound.load();
 try { setDifficulty(localStorage.getItem('fishio_diff') || 'normal'); } catch (e) {}
 if (!DIFF[difficulty]) setDifficulty('normal');
 CustomSkin.load();

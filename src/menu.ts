@@ -47,7 +47,7 @@ export function buildSkinRow(): void {
       player.palette = s.palette;
       player.stripes = s.stripes;
       player.customTex = null;
-      Sound.pellet();
+      Sound.click();
     });
     row.appendChild(c);
   });
